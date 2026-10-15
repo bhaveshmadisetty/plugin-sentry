@@ -47,6 +47,14 @@
         "Execution Status": "{{execution.state.current}}",
         "Final task ID": "{{lastTask.taskId}}",
         "Link": "{{link}}"
+        {% if customMessage is defined %}
+        ,"customMessage": {{ customMessage | toJson }}
+        {% endif %}
+        {% if customFields is defined and customFields is not empty %}
+        {% for entry in customFields %}
+        ,{{ entry.key | toJson }}: {{ entry.value | toJson }}
+        {% endfor %}
+        {% endif %}
         {% if extra is defined %}
         {% for entry in extra %}
         ,"{{entry.key}}": {{entry.value}}

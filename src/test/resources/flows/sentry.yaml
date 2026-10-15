@@ -14,6 +14,10 @@ tasks:
     serverName: "{{ inputs.url }}"
     platform: JAVA
     executionId: "{{trigger.executionId}}"
+    customMessage: "Custom failure message for Sentry"
+    customFields:
+      environment: "production"
+      team: "sre-core"
     extra:
       title: "Kestra Sentry alert"
       service: "Failed on task `failed`"

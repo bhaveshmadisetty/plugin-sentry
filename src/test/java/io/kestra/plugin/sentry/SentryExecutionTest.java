@@ -45,6 +45,9 @@ public class SentryExecutionTest extends AbstractSentryTest {
         assertThat(receivedData, containsString("Failed on task `failed`"));
         assertThat(receivedData, containsString("\"Final task ID\":\"failed\""));
         assertThat(receivedData, containsString("Kestra Sentry alert"));
+        assertThat(receivedData, containsString("\"customMessage\":\"Custom failure message for Sentry\""));
+        assertThat(receivedData, containsString("\"environment\":\"production\""));
+        assertThat(receivedData, containsString("\"team\":\"sre-core\""));
     }
 
 }

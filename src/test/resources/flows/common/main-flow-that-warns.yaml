@@ -1,0 +1,6 @@
+id: main-flow-that-warns
+namespace: io.kestra.tests
+tasks:
+  - id: warned
+    type: io.kestra.plugin.core.execution.Fail
+    allowFailure: true

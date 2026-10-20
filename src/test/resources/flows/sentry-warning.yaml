@@ -1,0 +1,27 @@
+id: sentry-warning
+namespace: io.kestra.tests
+
+inputs:
+  - id: url
+    type: STRING
+    defaults: "http://localhost:59443"
+
+tasks:
+  - id: sentry
+    type: io.kestra.plugin.sentry.SentryExecution
+    dsn: "{{ inputs.url }}/webhook-unit-test"
+    level: WARNING
+    serverName: "{{ inputs.url }}"
+    platform: JAVA
+    executionId: "{{trigger.executionId}}"
+    customMessage: "Custom warning message for Sentry"
+
+triggers:
+  - id: on_warning
+    type: io.kestra.plugin.core.trigger.Flow
+    preconditions:
+      id: flow_trigger
+      flows:
+        - namespace: io.kestra.tests
+          flowId: main-flow-that-warns
+          states: [ WARNING ]

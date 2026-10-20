@@ -1,0 +1,27 @@
+id: sentry-success
+namespace: io.kestra.tests
+
+inputs:
+  - id: url
+    type: STRING
+    defaults: "http://localhost:59443"
+
+tasks:
+  - id: sentry
+    type: io.kestra.plugin.sentry.SentryExecution
+    dsn: "{{ inputs.url }}/webhook-unit-test"
+    level: INFO
+    serverName: "{{ inputs.url }}"
+    platform: JAVA
+    executionId: "{{trigger.executionId}}"
+    customMessage: "Custom success message for Sentry"
+
+triggers:
+  - id: on_success
+    type: io.kestra.plugin.core.trigger.Flow
+    preconditions:
+      id: flow_trigger
+      flows:
+        - namespace: io.kestra.tests
+          flowId: main-flow-that-succeeds
+          states: [ SUCCESS ]

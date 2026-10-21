@@ -19,28 +19,22 @@
 {% endif %}
 {# firstFailed is a task run when a task failed, `false` when the execution ended in another state, and absent when no task run matched. #}
 {% set hasFailedTask = firstFailed is defined and firstFailed != false %}
-{% if not hasFailedTask %}
-{% if errors is defined %}
+{% if (not hasFailedTask) and errors is defined %}
     "errors": [
-{% for entry in errors %}
+    {% for entry in errors %}
       {
          "type": "unknown_error",
          "path": "{{entry.key}}",
          "details": "{{entry.value}}"
       }{% if not loop.last %},{% endif %}
-{% endfor %}
+    {% endfor %}
     ],
-{% endif %}
 {% endif %}
     "exception": {
       "values": [
         {
           "type": "{{execution.flowId}} ➛ {{execution.state.current}}",
-{% if hasFailedTask %}
-          "value": "Failed on task `{{firstFailed.taskId}}` after {{duration}}",
-{% else %}
-          "value": "Execution ended in {{execution.state.current}} after {{duration}}",
-{% endif %}
+          "value": "{% if hasFailedTask %}Failed on task `{{firstFailed.taskId}}`{% else %}Execution ended in {{execution.state.current}}{% endif %} after {{duration}}",
           "module": "{{execution.namespace}}",
           "stacktrace": {}
         }
@@ -51,12 +45,12 @@
         "Flow ID": "{{execution.flowId}}",
         "Execution ID": "{{execution.id}}",
         "Execution Status": "{{execution.state.current}}",
-{% if lastTask is defined %}
+        {% if lastTask is defined %}
         "Final task ID": "{{lastTask.taskId}}",
-{% elseif execution.taskRunList is defined and execution.taskRunList is not empty %}
-{% set lastTaskRun = execution.taskRunList | last %}
+        {% elseif execution.taskRunList is defined and execution.taskRunList is not empty %}
+        {% set lastTaskRun = execution.taskRunList | last %}
         "Final task ID": "{{lastTaskRun.taskId}}",
-{% endif %}
+        {% endif %}
         "Link": "{{link}}"
         {% if customMessage is defined %}
         ,"customMessage": {{ customMessage | toJson }}
